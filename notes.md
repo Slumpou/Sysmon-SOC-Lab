@@ -1,4 +1,4 @@
-\# Example Investigation Notes
+\## Example Investigation Notes
 
 
 
@@ -10,7 +10,7 @@ This allowed me to confirm that Sysmon logs were successfully being forwarded an
 
 
 
-\*\*Example query used:\*\*
+Example query used:
 
 
 
@@ -21,8 +21,6 @@ index=main sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational EventC
 | sort -\_time | head 20
 
 
-
-From the event details, several important investigation fields can be reviewed:
 
 
 
