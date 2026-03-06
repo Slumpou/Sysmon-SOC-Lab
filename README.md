@@ -48,3 +48,26 @@ During the process of setting up this project, I ran into several challenges get
 ![Splunk Event Screenshot](splunk-eventid1.png)
 
 This screenshot displays a Sysmon Event ID 1, which I triggered by launching Notepad. It shows key details like the process name and user, confirming that Sysmon successfully logged the action. By reviewing these fields, I ensured that the process creation events were being captured as expected, validating the integration between Sysmon and Splunk."
+
+
+## Example Investigation Notes
+
+During testing of Sysmon process creation logs (EventCode=1), I generated events by launching simple applications such as Notepad through PowerShell.
+
+This allowed me to confirm that Sysmon logs were successfully being forwarded and indexed by Splunk.
+
+Example query used:
+
+index=main sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational EventCode=1
+| sort -_time | head 20
+
+From the event details, several important investigation fields can be reviewed:
+
+Image – shows the executable that was launched  
+CommandLine – reveals how the process was started  
+ParentImage – identifies the process responsible for spawning the new process  
+User – indicates which account executed the process
+
+In a real SOC environment, these fields help analysts determine whether a process was expected or potentially suspicious. For example, unusual parent-child process relationships or encoded PowerShell commands could indicate malicious activity.
+
+
