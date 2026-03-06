@@ -10,7 +10,7 @@ This allowed me to confirm that Sysmon logs were successfully being forwarded an
 
 
 
-Example query used:
+\*\*Example query used:\*\*
 
 
 
@@ -22,13 +22,21 @@ index=main sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational EventC
 
 
 
+From the event details, several important investigation fields can be reviewed:
+
 
 
 Image – shows the executable that was launched
 
+
+
 CommandLine – reveals how the process was started
 
+
+
 ParentImage – identifies the process responsible for spawning the new process
+
+
 
 User – indicates which account executed the process
 
@@ -38,9 +46,7 @@ In a real SOC environment, these fields help analysts determine whether a proces
 
 
 
-
-
-\## Observations
+<details> <summary>## Observations</summary>
 
 
 
@@ -56,11 +62,17 @@ This type of logging is important because it allows analysts to trace how progra
 
 
 
-\## Troubleshooting Notes
+</details> <details> <summary>## Troubleshooting Notes</summary>
 
 
 
 During the process of setting up this project, I ran into several challenges getting Sysmon logs to appear in Splunk. Even though Sysmon was installed and running, I wasn’t seeing any events at first. After a lot of trial and error, I realized the issue was with the log file path—not being accessible by Splunk. Once I moved the log location to a public user folder and adjusted permissions, events started flowing. I also had to rethink my search logic: initially, I was filtering too narrowly by event code, so I broadened the search, looked at the raw events, and identified the patterns I needed. This taught me a lot about field extraction, indexing, and how to iteratively troubleshoot issues, which are all crucial skills in a SOC environment.
+
+
+
+</details>
+
+
 
 
 
