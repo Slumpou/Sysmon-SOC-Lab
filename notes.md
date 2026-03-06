@@ -14,6 +14,8 @@ Example query used:
 
 
 
+```spl
+
 index=main sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational EventCode=1
 
 | sort -\_time | head 20
@@ -68,9 +70,5 @@ During the process of setting up this project, I ran into several challenges get
 
 
 
-This screenshot displays a Sysmon Event ID 1, which I triggered by launching Notepad. It shows key details like the process name and user, confirming that Sysmon successfully logged the action. By reviewing these fields, I ensured that the process creation events were being captured as expected, validating the integration between Sysmon and Splunk."
-
-
-
-
+This screenshot displays a Sysmon Event ID 1, which I triggered by launching Notepad. It shows key details like the process name and user, confirming that Sysmon successfully logged the action. By reviewing these fields, I ensured that the process creation events were being captured as expected, validating the integration between Sysmon and Splunk.
 
