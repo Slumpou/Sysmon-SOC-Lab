@@ -64,3 +64,24 @@ index=main sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational EventC
 - `EventCode=1` → process creation  
 - `EventCode=3` → network connections  
 - `EventCode=6` → driver/image loads
+
+---
+
+## 4. Suspicious PowerShell Execution — Look for Strange Scripts
+
+PowerShell is a tool on Windows that lets people run commands and scripts. Attackers sometimes use it to run hidden or tricky scripts. This search looks for PowerShell commands that are encoded or unusual, which might be a sign of something suspicious.
+
+```spl
+index=main sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational EventCode=1
+| search Image="*powershell.exe" AND CommandLine="*-EncodedCommand*"
+| sort -_time | head 20
+```
+
+**Why it matters:**  
+Encoded commands are often used to hide what the script is doing. Watching for this can help catch something bad early, before it causes problems.
+
+**Useful Fields for Investigation:**  
+- `Image` — should be `powershell.exe` or `pwsh.exe`  
+- `CommandLine` — look for `-EncodedCommand` or other unusual flags  
+- `User` — see which account ran the command  
+- `ParentImage` — may show what started PowerShell  
