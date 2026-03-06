@@ -41,9 +41,6 @@ git clone https://github.com/Slumpou/Sysmon-SOC-Lab.git
 - All detection searches are examples and should be adapted for real-world environments
 - This lab is intended for learning, practice, and portfolio purposes only
 
-
-This screenshot displays a Sysmon Event ID 1, which we triggered by launching Notepad on the system. We used this event to confirm that process creation events were being captured correctly in Splunk. By examining fields like the process name and user, we ensured that Sysmon was logging the expected activity.
-
 ---
 
 During the process of setting up this project, I ran into several challenges getting Sysmon logs to appear in Splunk. Even though Sysmon was installed and running, I wasn’t seeing any events at first. After a lot of trial and error, I realized the issue was with the log file path—not being accessible by Splunk. Once I moved the log location to a public user folder and adjusted permissions, events started flowing. I also had to rethink my search logic: initially, I was filtering too narrowly by event code, so I broadened the search, looked at the raw events, and identified the patterns I needed. This taught me a lot about field extraction, indexing, and how to iteratively troubleshoot issues, which are all crucial skills in a SOC environment.
