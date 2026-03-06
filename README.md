@@ -48,6 +48,6 @@ This screenshot displays a Sysmon Event ID 1, which we triggered by launching No
 
 During the process of setting up this project, I ran into several challenges getting Sysmon logs to appear in Splunk. Even though Sysmon was installed and running, I wasn’t seeing any events at first. After a lot of trial and error, I realized the issue was with the log file path—not being accessible by Splunk. Once I moved the log location to a public user folder and adjusted permissions, events started flowing. I also had to rethink my search logic: initially, I was filtering too narrowly by event code, so I broadened the search, looked at the raw events, and identified the patterns I needed. This taught me a lot about field extraction, indexing, and how to iteratively troubleshoot issues, which are all crucial skills in a SOC environment.
 
-![Splunk Event Screenshot](Screenshot Splunk Event 1.PNG)
+![Splunk Event Screenshot](splunk-eventid1.png)
 
 This screenshot displays a Sysmon Event ID 1, which I triggered by launching Notepad. It shows key details like the process name and user, confirming that Sysmon successfully logged the action. By reviewing these fields, I ensured that the process creation events were being captured as expected, validating the integration between Sysmon and Splunk."
