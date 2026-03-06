@@ -7,6 +7,20 @@ This repository contains a Security Operations Center (SOC) lab using **Sysmon**
 - Provide a structured lab environment for learning SOC detection techniques
 - Demonstrate how Sysmon logs can be ingested, searched, and monitored in Splunk
 
+## Lab Goal
+
+The goal of this lab was to learn how system activity from a Windows machine can be collected and reviewed using Splunk. I installed and configured Sysmon to generate detailed event logs from the system.
+
+After confirming that the logs were successfully appearing in Splunk, I used simple searches to review things like process creation, network connections, and PowerShell activity. These are the types of events a SOC analyst would normally review when monitoring systems for suspicious behavior.
+
+## Tools Used
+
+Splunk Enterprise – log ingestion and search platform  
+Sysmon – Windows system monitoring and event generation  
+Windows Event Logs – telemetry source for host activity  
+PowerShell – used to generate test events such as launching Notepad
+
+
 ## Project Structure
 
 ```
@@ -23,7 +37,17 @@ Sysmon-SOC-Lab/
 
 - **Process Monitoring:** Detect suspicious process creations
 - **Network Monitoring:** Detect unusual network connections initiated by processes
-- **Driver & Module Monitoring:** Detect loaded drivers and DLLs for potential malware persistence
+- **Driver & Module Monitoring:** Detect loaded drivers for potential malware persistence
+
+
+## Observations
+
+After generating several Sysmon events and reviewing them in Splunk, I was able to confirm that the system was correctly logging process activity.
+
+For example, when launching Notepad from PowerShell, a Sysmon EventCode 1 entry appeared showing the new process along with useful investigation fields such as the command line, parent process, and the user account that executed it.
+
+This type of logging is important because it allows analysts to trace how programs start on a system and identify unusual behavior, such as scripts launching unexpected tools or suspicious parent-child process relationships.
+
 
 ## How to Use
 
