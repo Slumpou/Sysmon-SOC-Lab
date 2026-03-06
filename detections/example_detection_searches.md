@@ -1,75 +1,76 @@
 # Example Detection Searches for Sysmon Logs
 
-This file contains example Splunk detection searches applied to Sysmon Operational logs ingested into Splunk Enterprise. These searches demonstrate how to monitor Windows hosts for suspicious activity and highlight basic threat hunting techniques commonly used in a Security Operations Center (SOC).
+This file contains example Splunk detection searches used with Sysmon Operational logs that were ingested into Splunk Enterprise during this lab.
 
-Each search includes:
-- The EventCode or behavior it monitors
-- Why it matters in a SOC environment
-- Key fields to investigate
+The goal of these searches is to demonstrate some basic threat-hunting techniques that a SOC analyst might use when monitoring Windows systems. While these examples are simple, they show how Sysmon data can be used to identify potentially suspicious activity such as unusual processes, unexpected network connections, or abnormal PowerShell usage.
 
----
+Each search below includes:
 
-## 1. Process Creation — Detect Suspicious Processes
+* The Sysmon EventCode being analyzed
+* A short explanation of why it is relevant in a SOC environment
+* Some useful fields that would normally be reviewed during an investigation
 
-This search lists recently created processes on the host. Monitoring process creation is fundamental because attackers often execute unusual binaries, scripts, or malware. This query can help identify suspicious activity, such as PowerShell scripts, unknown executables, or tools used for lateral movement.
+## 1. Process Creation – Monitoring Newly Launched Processes
+
+This search shows recently created processes on the host. Monitoring process creation is one of the most important things analysts do because attackers often run tools, scripts, or malware that appear as new processes on the system.
+
+During testing in this lab, I generated EventCode 1 logs by launching simple applications such as Notepad through PowerShell. This confirmed that Sysmon events were being successfully collected and indexed by Splunk.
 
 ```spl
 index=main sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational EventCode=1
 | sort -_time | head 50
 ```
 
-**Useful Fields for Investigation:**
-- `Image` — path to the executable  
-- `CommandLine` — arguments used; can reveal encoded or suspicious commands  
-- `ParentImage` — parent process, useful for spotting process injection or spawn chains  
-- `User` — which user executed the process  
+Useful fields to review during investigation:
 
----
+`Image` – path of the executable that was launched
+`CommandLine` – arguments used to start the process (useful for spotting suspicious flags or encoded commands)
+`ParentImage` – the parent process that launched the executable
+`User` – which account executed the process
 
-## 2. Network Connections — Detect Suspicious Network Activity
+## 2. Network Connections – Monitoring Outbound Activity
 
-This search monitors network connections made by processes. Network activity is a common vector for malware communication and lateral movement. Reviewing unusual destinations or high-volume connections can help identify suspicious behavior.
+This search shows network connections created by processes on the system. Monitoring network activity can help identify malware communicating with external servers, unusual ports being used, or unexpected applications connecting to the internet.
 
 ```spl
 index=main sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational EventCode=3
 | sort -_time | head 20
 ```
 
-**Useful Fields for Investigation:**
-- `Image` — which process initiated the connection  
-- `DestinationIp` / `DestinationPort` — where the process connected  
-- `Protocol` — TCP/UDP  
-- `User` — which account initiated the connection  
+Useful fields to review:
 
----
+`Image` – which process initiated the connection
+`DestinationIp` / `DestinationPort` – the destination of the connection
+`Protocol` – typically TCP or UDP
+`User` – the account associated with the process
 
-## 3. Driver or Image Loads — Monitor System Modules
+## 3. Driver or Image Loads – Monitoring System Modules
 
-This search identifies driver or module loads on the system. Monitoring loaded drivers and DLLs can help detect suspicious persistence mechanisms or malware modifying the kernel or system libraries.
+This search looks for drivers or modules loaded on the system. While many of these events are normal, attackers sometimes load malicious drivers or tamper with system libraries as a persistence technique.
 
 ```spl
 index=main sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational EventCode=6
 | sort -_time | head 20
 ```
 
-**Useful Fields for Investigation:**
-- `ImageLoaded` — the driver or module path  
-- `Hashes` — hash values, useful for detecting known malicious files  
-- `Signed` — digital signature status, can indicate tampering  
-- `User` — which account loaded the driver or module  
+Useful fields to review:
 
----
+`ImageLoaded` – the driver or module path
+`Hashes` – file hashes that can be checked against threat intelligence sources
+`Signed` – whether the file has a valid digital signature
+`User` – which account loaded the module
 
-**Quick Reference for EventCodes:**
-- `EventCode=1` → process creation  
-- `EventCode=3` → network connections  
-- `EventCode=6` → driver/image loads
+## Quick Reference for EventCodes
 
----
+EventCode=1 – Process creation
+EventCode=3 – Network connections
+EventCode=6 – Driver or image loads
 
-## 4. Suspicious PowerShell Execution — Look for Strange Scripts
+## 4. Suspicious PowerShell Execution – Identifying Encoded Commands
 
-PowerShell is a tool on Windows that lets people run commands and scripts. Attackers sometimes use it to run hidden or tricky scripts. This search looks for PowerShell commands that are encoded or unusual, which might be a sign of something suspicious.
+PowerShell is a legitimate administrative tool in Windows, but it is also commonly abused by attackers. One technique frequently used is encoding commands so that they are harder to read or detect.
+
+This search looks for PowerShell executions that include the `-EncodedCommand` flag.
 
 ```spl
 index=main sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational EventCode=1
@@ -77,11 +78,13 @@ index=main sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational EventC
 | sort -_time | head 20
 ```
 
-**Why it matters:**  
-Encoded commands are often used to hide what the script is doing. Watching for this can help catch something bad early, before it causes problems.
+Why this matters:
 
-**Useful Fields for Investigation:**  
-- `Image` — should be `powershell.exe` or `pwsh.exe`  
-- `CommandLine` — look for `-EncodedCommand` or other unusual flags  
-- `User` — see which account ran the command  
-- `ParentImage` — may show what started PowerShell  
+Encoded commands can hide the real behavior of a script. Monitoring for this type of activity can help analysts quickly identify suspicious PowerShell usage and investigate further before the activity escalates.
+
+Useful fields to review:
+
+`Image` – usually powershell.exe or pwsh.exe
+`CommandLine` – reveals the encoded flag or other suspicious arguments
+`User` – which account executed the command
+`ParentImage` – shows what launched PowerShell
