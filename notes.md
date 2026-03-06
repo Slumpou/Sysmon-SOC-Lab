@@ -9,7 +9,7 @@ This allowed me to confirm that Sysmon logs were successfully being forwarded an
 ```spl
 index=main sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational EventCode=1
 | sort -_time | head 20
-
+```
 From the event details, several important investigation fields can be reviewed:
 
 Image – shows the executable that was launched
