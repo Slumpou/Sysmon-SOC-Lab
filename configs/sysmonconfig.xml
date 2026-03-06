@@ -1,0 +1,8 @@
+<Sysmon schemaversion="4.30">
+    <EventFiltering>
+        <!-- Example: Log all process creations -->
+        <ProcessCreate onmatch="include">
+            <CommandLine condition="is">notepad.exe</CommandLine>
+        </ProcessCreate>
+    </EventFiltering>
+</Sysmon>

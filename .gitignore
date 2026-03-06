@@ -1,0 +1,6 @@
+# Ignore Windows Event Log files
+*.evtx
+
+# Ignore any temporary files
+*.tmp
+*.log
